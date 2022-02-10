@@ -1,0 +1,77 @@
+<odoo>
+    <data>
+        <!-- Tree View -->
+        <record id="hms_tree_view" model="ir.ui.view">
+            <field name="name">hms tree view</field>
+            <field name="model">hms.patient</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="first_name"/>
+                    <field name="last_name"/>
+                    <field name="age"/>
+                    <field name="cr_ratio"/>
+                    <field name="blood_type"/>
+                    <field name="pcr"/>
+                    <field name="history" attrs="{'invisible': [('age', '&lt;', 50)]}"/>
+                </tree>
+            </field>
+        </record>
+        <!-- Form View -->
+        <record id="hms_form_view" model="ir.ui.view">
+            <field name="name">hms form view</field>
+            <field name="model">hms.patient</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <field name="state" widget="statusbar"/>
+<!--                        <button type="object" name="first_interview" string="First Interview"/>-->
+<!--                        <button type="object" name="second_interview" string="Second Interview"/>-->
+                        <button type="object" name="next_stage" string="Next Stage"
+                                attrs="{'invisible': [('state', 'in', ['serious'])]}"/>
+                                />
+<!--                        <button type="object" name="accept_state" string="Accept" attrs="{'invisible': [('state', '=', 'accepted')]}"/>-->
+<!--                        <button type="object" name="reject_state" string="Reject" />-->
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="first_name"/>
+                                <field name="last_name"/>
+                                <field name="email"/>
+                                <field name="birthdate"/>
+                                <field name="history" attrs="{'invisible': [('age', '&lt;', 50)]}"/>
+                                <field name="cr_ratio" attrs="{'required': [('pcr', '=', True)]}"/>
+                                <field name="blood_type" widget="selection"/>
+                                <field name="pcr"/>
+                                <field name="dep_id"  domain="[('is_opened', '=', True)]"/>
+                                <field name="capacity" attrs="{'invisible': [('dep_id', '=', False)]}"/>
+                                <field name="doctor_ids" widget="many2many_tags" attrs="{'readonly': [('dep_id', '=',False)]}"/>
+                            </group>
+                            <group>
+                                <field name="avatar" widget="image"/>
+                                <field name="address"/>
+                                <field name="age"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <pages string="LOG INFO">
+                                <field name="log_id"/>
+                                <field name="created_by"/>
+                                <field name="date"/>
+                                <field name="description"/>
+                            </pages>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="hms_action" model="ir.actions.act_window">
+            <field name="name">hms</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">hms.patient</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <menuitem id="hms_root_menu" name="HMS" sequence="1"/>
+        <menuitem id="hms_sub_menu" name="Patients" action="hms_action" parent="hms_root_menu"/>
+    </data>
+</odoo>
